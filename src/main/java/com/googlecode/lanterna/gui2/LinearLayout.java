@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * Simple layout manager the puts all components on a single line, either horizontally or vertically.
+ * If reverse is passed as {@code true}, then first component will be placed right/bottom-most.
  */
 public class LinearLayout implements LayoutManager {
     /**
@@ -75,9 +76,10 @@ public class LinearLayout implements LayoutManager {
     private final Direction direction;
     private int spacing;
     private boolean changed;
+    private boolean reverse;
 
     /**
-     * Default constructor, creates a vertical {@code LinearLayout}
+     * Default constructor, creates a vertical, non-reverse {@code LinearLayout}
      */
     public LinearLayout() {
         this(Direction.VERTICAL);
@@ -88,9 +90,21 @@ public class LinearLayout implements LayoutManager {
      * @param direction Direction for this {@code Direction}
      */
     public LinearLayout(Direction direction) {
+        this(Direction.VERTICAL, false);
+    }
+
+    /**
+     * Standard constructor that creates a {@code LinearLayout} with a specified direction to
+     * position the components on and a flag to reverse the order of the components along the
+     * specified direction.
+     * @param direction Direction for this {@code Direction}
+     * @param reverse   defines whether components are laid out in reverse order
+     */
+    public LinearLayout(Direction direction, boolean reverse) {
         this.direction = direction;
         this.spacing = direction == Direction.HORIZONTAL ? 1 : 0;
         this.changed = true;
+        this.reverse = reverse;
     }
 
     /**
@@ -168,6 +182,14 @@ public class LinearLayout implements LayoutManager {
         this.changed = false;
     }
 
+    private int getPosition(int remain, int total, int size) {
+        if (this.reverse) {
+            return remain - size;
+        } else {
+            return total - remain;
+        }
+    }
+
     private void doVerticalLayout(TerminalSize area, List<Component> components) {
         int remainingVerticalSpace = area.getRows();
         int availableHorizontalSpace = area.getColumns();
@@ -191,9 +213,10 @@ public class LinearLayout implements LayoutManager {
                     decidedSize = decidedSize.withColumns(availableHorizontalSpace);
                     alignment = Alignment.Beginning;
                 }
+                int vpos = getPosition(remainingVerticalSpace, area.getRows(), decidedSize.getRows())
 
                 TerminalPosition position = component.getPosition();
-                position = position.withRow(area.getRows() - remainingVerticalSpace);
+                position = position.withRow(vpos);
                 switch(alignment) {
                     case End:
                         position = position.withColumn(availableHorizontalSpace - decidedSize.getColumns());
@@ -236,9 +259,10 @@ public class LinearLayout implements LayoutManager {
                     decidedSize = decidedSize.withRows(availableVerticalSpace);
                     alignment = Alignment.Beginning;
                 }
+                int hpos = getPosition(remainingHorizontalSpace, area.getColumns(), decidedSize.getColumns())
 
                 TerminalPosition position = component.getPosition();
-                position = position.withColumn(area.getColumns() - remainingHorizontalSpace);
+                position = position.withColumn(hpos);
                 switch(alignment) {
                     case End:
                         position = position.withRow(availableVerticalSpace - decidedSize.getRows());
