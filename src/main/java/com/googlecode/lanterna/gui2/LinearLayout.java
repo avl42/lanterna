@@ -213,7 +213,7 @@ public class LinearLayout implements LayoutManager {
                     decidedSize = decidedSize.withColumns(availableHorizontalSpace);
                     alignment = Alignment.Beginning;
                 }
-                int vpos = getPosition(remainingVerticalSpace, area.getRows(), decidedSize.getRows())
+                int vpos = getPosition(remainingVerticalSpace, area.getRows(), decidedSize.getRows());
 
                 TerminalPosition position = component.getPosition();
                 position = position.withRow(vpos);
@@ -259,7 +259,7 @@ public class LinearLayout implements LayoutManager {
                     decidedSize = decidedSize.withRows(availableVerticalSpace);
                     alignment = Alignment.Beginning;
                 }
-                int hpos = getPosition(remainingHorizontalSpace, area.getColumns(), decidedSize.getColumns())
+                int hpos = getPosition(remainingHorizontalSpace, area.getColumns(), decidedSize.getColumns());
 
                 TerminalPosition position = component.getPosition();
                 position = position.withColumn(hpos);
