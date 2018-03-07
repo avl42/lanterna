@@ -90,7 +90,7 @@ public class LinearLayout implements LayoutManager {
      * @param direction Direction for this {@code Direction}
      */
     public LinearLayout(Direction direction) {
-        this(Direction.VERTICAL, false);
+        this(direction, false);
     }
 
     /**
